@@ -123,4 +123,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# files can be accessed using these URLS and will be automatically uploaded there
+MEDIA_URL="/media/"
+MEDIA_ROOT=os.path.join(BASE_DIR,"media_cdn")
+
 django.setup()

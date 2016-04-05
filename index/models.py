@@ -23,7 +23,7 @@ class document(models.Model):
     doc_tags=models.CharField(max_length=50,default="")
     doc_description=models.CharField(max_length=100,default="")
     doc_uploaded_by=models.ForeignKey(Users)
-    doc_path=models.FileField(upload_to='documents')
+    doc_path=models.FileField()
     doc_uploaded_on=models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

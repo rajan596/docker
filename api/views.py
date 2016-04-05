@@ -4,9 +4,13 @@ from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.parsers import FormParser,MultiPartParser
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import APIView,parser_classes
 
 from index.models import Users, document
 from api.serializers import UserListSerializer, DocumentSerializer
+from .forms import DocumentForm
 
 import os
 # Create your views here.
@@ -55,7 +59,7 @@ def document_list(request):
 
     return Response(status.HTTP_404_NOT_FOUND)
 
-@api_view(['GET','POST','DELETE'])
+@api_view(['GET','POST','DELETE','PUT'])
 def document_detail(request,pk):
     """
     GET / POST / DELETE based on doc_id
@@ -82,3 +86,15 @@ def document_detail(request,pk):
         # delete document from folder
         doc.delete()
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+    elif request.method=="POST":
+        return HttpResponse(str(request))
+
+@api_view(["POST"])
+def upload_document(request):
+    form=DocumentForm(request.POST or None, request.data or None,instance=instance)
+    if form.is_valid():
+        instance=form.save(commit=False)
+        instance.save()
+        return Response(status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
