@@ -4,15 +4,11 @@ from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.parsers import FormParser,MultiPartParser
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import APIView,parser_classes
 
 from index.models import Users, document
 from api.serializers import UserListSerializer, DocumentSerializer
 from .forms import DocumentForm
 
-import os
 # Create your views here.
 def home(request):
     return HttpResponse("Home")
@@ -92,7 +88,7 @@ def document_detail(request,pk):
 
 @api_view(["POST"])
 def upload_document(request):
-    form=DocumentForm(request.POST or None, request.data or None,instance=instance)
+    form=DocumentForm(request.POST or None, request.data or None)
     if form.is_valid():
         instance=form.save(commit=False)
         instance.save()
