@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib import admin
 
 """
 User table
@@ -14,6 +15,9 @@ class Users(models.Model):
     def __str__(self):
         return self.username
 
+class UsersAdmin(admin.ModelAdmin):
+    list_display = ('username','fullname','email','usertype','account_created_on')
+
 """
 Document Details table
 """
@@ -28,3 +32,6 @@ class document(models.Model):
 
     def __str__(self):
         return self.doc_title
+
+class documentAdmin(admin.ModelAdmin):
+    list_display = ('doc_title','doc_uploaded_by','doc_tags','doc_description','doc_path')

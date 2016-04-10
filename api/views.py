@@ -9,6 +9,10 @@ from index.models import Users, document
 from api.serializers import UserListSerializer, DocumentSerializer
 from .forms import DocumentForm
 
+from django.db.models import Q
+
+import json
+
 # Create your views here.
 def home(request):
     return HttpResponse("Home")
@@ -79,7 +83,6 @@ def document_detail(request,pk):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method=="DELETE":
-        # delete document from folder
         doc.delete()
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -94,3 +97,71 @@ def upload_document(request):
         instance.save()
         return Response(status=status.HTTP_201_CREATED)
     return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+
+@api_view(["GET","POST"])
+def search_documents(request):
+    """
+    Pass JSON Array Having following optional {key,balue} pairs
+    Exa :
+    {
+        "doc_uploaded_by":"rajan",
+        "doc_title":"Linked List",
+        "doc_tags":ds",
+        "doc_description":"list",
+        "doc_type":"pdf",
+    }
+    """
+    """
+    :param request:
+    :return:
+    """
+    try:
+        # accessing json object
+        q=json.loads(request.body.decode("utf-8"))
+
+        # filtering objects
+        docs=document.objects.all()
+
+        # filter by uploader
+        try:
+            if "doc_uploaded_by" in q:
+                docs=docs.filter(Q(doc_uploaded_by__username=q["doc_uploaded_by"])|
+                                 Q(doc_uploaded_by__fullname__contains=q["doc_uploaded_by"])
+                                 )
+        except e:
+            print("+")
+
+        # filter by doc_title
+        try:
+            if "doc_title" in q:
+                docs = docs.filter(Q(doc_title__contains=q["doc_title"]))
+        except e:
+            print("+")
+
+        # search by tags
+        try:
+            if "doc_tags" in q:
+                docs = docs.filter(Q(doc_tags__contains=q["doc_tags"]))
+        except e:
+            print("+")
+
+        # search by description
+        try:
+            if "doc_description" in q:
+                docs = docs.filter(Q(doc_description__contains=q["doc_description"]))
+        except e:
+            print("+")
+
+        # search by type
+        try:
+            if "doc_type" in q:
+                docs = docs.filter(Q(doc_path__contains=str("."+q["doc_type"])))
+        except e:
+            print("+")
+
+        # serialize data
+        serializer=DocumentSerializer(docs,many=True)
+        return Response(serializer.data)
+
+    except:
+       return Response(status.HTTP_404_NOT_FOUND)
