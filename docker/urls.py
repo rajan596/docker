@@ -22,7 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('api.urls'),name="api"),
-    url(r'^$',include('index.urls'),name="home_page"),
+    url(r'^',include('index.urls'),name="home_page"),
 ]
 
 # to access file via URL

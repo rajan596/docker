@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from index.models import Users, document
+from index.models import Users, document , Stats
 from api.serializers import UserListSerializer, DocumentSerializer
 from .forms import DocumentForm
 
@@ -91,12 +91,18 @@ def document_detail(request,pk):
 
 @api_view(["POST"])
 def upload_document(request):
-    form=DocumentForm(request.POST or None, request.data or None)
-    if form.is_valid():
-        instance=form.save(commit=False)
-        instance.save()
-        return Response(status=status.HTTP_201_CREATED)
-    return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+
+    if request.method=="POST":
+        form=DocumentForm(request.POST or None, request.data or None)
+        if form.is_valid():
+            instance=form.save(commit=False)
+            instance.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(["GET","POST"])
 def search_documents(request):
@@ -111,16 +117,23 @@ def search_documents(request):
         "doc_type":"pdf",
     }
     """
-    """
-    :param request:
-    :return:
-    """
     try:
         # accessing json object
         q=json.loads(request.body.decode("utf-8"))
 
         # filtering objects
         docs=document.objects.all()
+
+        # only { search_type and query }
+        if "search_type" in q:
+            docs=docs.filter(Q(doc_title__contains=q["query"]) |
+                             Q(doc_uploaded_by__username__contains=q["query"]) |
+                             Q(doc_tags__contains=q["query"]) |
+                             Q(doc_description__contains=q["query"]) |
+                             Q(doc_path__contains=q["query"])
+                             )
+            serializer=DocumentSerializer(docs,many=True)
+            return Response(serializer.data)
 
         # filter by uploader
         try:
@@ -142,6 +155,7 @@ def search_documents(request):
         try:
             if "doc_tags" in q:
                 docs = docs.filter(Q(doc_tags__contains=q["doc_tags"]))
+
         except e:
             print("+")
 

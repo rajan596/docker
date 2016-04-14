@@ -22,8 +22,8 @@ class UsersAdmin(admin.ModelAdmin):
 Document Details table
 """
 class document(models.Model):
-    doc_title=models.CharField(max_length=50)
-    doc_type=models.CharField(max_length=10)
+    doc_title=models.CharField(max_length=50,default="")
+    doc_type=models.CharField(max_length=10,default="")
     doc_tags=models.CharField(max_length=50,default="")
     doc_description=models.CharField(max_length=100,default="")
     doc_uploaded_by=models.ForeignKey(Users)
@@ -35,3 +35,16 @@ class document(models.Model):
 
 class documentAdmin(admin.ModelAdmin):
     list_display = ('doc_title','doc_uploaded_by','doc_tags','doc_description','doc_path')
+
+"""
+Stats Table
+"""
+class Stats(models.Model):
+    keyword=models.CharField(max_length=10)
+    frequency=models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.keyword
+
+class StatsAdmin(admin.ModelAdmin):
+    list_display=('keyword','frequency')

@@ -1,0 +1,9 @@
+{% if doc %}
+    <p> {{ doc.id }} </p>
+    <p> {{ doc.doc_title }} </p>
+    <p> {{ doc.doc_description }} </p>
+    <p> {{ doc.doc_tags }} </p>
+    <p> {{ doc.doc_uploaded_by }} </p>
+{% else %}
+    <p>Not found</p>
+{% endif %}
