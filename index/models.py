@@ -28,8 +28,8 @@ class document(models.Model):
     doc_description=models.CharField(max_length=100,default="")
     doc_uploaded_by=models.ForeignKey(Users)
     doc_path=models.FileField()
+    doc_image=models.FileField(default="./book_icon_grey.png")
     doc_uploaded_on=models.DateTimeField(auto_now_add=True)
-
     def __str__(self):
         return self.doc_title
 
@@ -48,3 +48,4 @@ class Stats(models.Model):
 
 class StatsAdmin(admin.ModelAdmin):
     list_display=('keyword','frequency')
+

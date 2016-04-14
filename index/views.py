@@ -8,18 +8,18 @@ from django.http import Http404
 # Create your views here.
 
 def home(request):
+    return render(request,"index/index.html")
+    """
     docs=document.objects.all()
     template=loader.get_template("index/index.html")
     context={
         "docs":docs,
     }
     return HttpResponse(template.render(context,request))
+    """
 
 def view_document(request,pk):
-    try:
-        doc=document.objects.get(pk=pk)
-    except:
-        return HttpResponse("Not found")
+    doc=document.objects.get(pk=pk)
 
     if doc:
         template=loader.get_template("index/document.html")

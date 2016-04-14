@@ -12,5 +12,5 @@ class DocumentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=document
-        fields=( 'id','doc_title' , 'doc_type' , 'doc_tags', 'doc_description' ,  'doc_path' ,
+        fields=( 'id','doc_title' , 'doc_type' , 'doc_tags', 'doc_description' ,  'doc_path' , 'doc_image',
                  'doc_uploaded_on','doc_uploaded_by' )
