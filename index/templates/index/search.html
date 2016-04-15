@@ -9,30 +9,10 @@
              dataType: "json",
              url: "http://127.0.0.1:8000/api/documents",
              success: function(data){
-                var len=Object.keys(data).length;
-                var i=0;
-                var out="";
-                for(i=0;i<len;i++) {
-                    out+="<div class=\"col-sm-3\" ><div class=\"panel panel-primary\"><div class=\"panel-heading\">" + data[i].doc_title + "</div><div class=\"panel-body\"><img src=\"http://127.0.0.1:8000"+data[i].doc_image+"\" class=\"img-responsive\" style=\"width:100%px;height:200px;\" alt=\"Image\"></div><div class=\"panel-footer\">" + data[i].doc_description + "</div></div></div>";
-                 }
-
-                 document.getElementById("xyz").innerHTML=out;
-             }
-         });
-
-function onSearch(){
-         var formData = JSON.stringify($("#searchForm").serializeArray());
-         formData = JSON.parse(formData);
-         var y=JSON.stringify({"query":formData[0].value});
-         console.log(y);
-         $.ajax({
-             type: "POST",
-             dataType: "json",
-             url: "http://127.0.0.1:8000/api/search",
-             data: y,
-             success: function(data){
-                console.log("+++++++");
                 console.log(data);
+                var arr=$.map(data[0],function(o){
+                  return o;
+                });
                 var len=Object.keys(data).length;
                 var i=0;
                 var out="";
@@ -42,15 +22,16 @@ function onSearch(){
                  }
 
                  document.getElementById("xyz").innerHTML=out;
-             },
-             dataType: "json",
-             contentType : "application/json"
+             }
          });
-}
 
 </script>
 
 <div id="info"></div>
+<!--
+                    out+="<div class=\"col-sm-4\" ><div class=\"panel panel-primary\"><div class=\"panel-heading\">" + data[i].doc_title + "</div><div class=\"panel-body\"><img src=\"http://placehold.it/150x80?text=IMAGE\" class=\"img-responsive\" style=\"width:100%\" alt=\"Image\"></div>\<div class=\"panel-footer\">" + data[i].doc_description + "</div></div></div>";
+
+-->
 <ul>
 
         <div class="container">

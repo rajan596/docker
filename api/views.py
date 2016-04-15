@@ -125,7 +125,7 @@ def search_documents(request):
         docs=document.objects.all()
 
         # only { search_type and query }
-        if "search_type" in q:
+        if "query" in q:
             docs=docs.filter(Q(doc_title__contains=q["query"]) |
                              Q(doc_uploaded_by__username__contains=q["query"]) |
                              Q(doc_tags__contains=q["query"]) |
